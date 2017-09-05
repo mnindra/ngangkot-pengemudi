@@ -11,13 +11,24 @@ import {
   Grid,
   Col
 } from 'native-base';
-import {StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import styles from './styles';
+import StarRating from 'react-native-star-rating';
 
 export default class Profil extends Component {
 
-  render () {
+  hitungRating() {
+    let rating = 0;
+    let ratingCount = 0;
+    for(let index in this.props.user.testimoni) {
+      rating += this.props.user.testimoni[index].rating;
+      ratingCount++;
+    }
+    rating = rating / ratingCount;
+    return rating;
+  }
 
+  render () {
     const placehold = 'http://placehold.it/300x300';
     const navigation = this.props.parent.props.navigation;
 
@@ -31,6 +42,34 @@ export default class Profil extends Component {
           </TouchableOpacity>
           <Text style={styles.topSectionText}>{this.props.user.nama}</Text>
           <Text style={styles.topSectionText}>{this.props.user.email}</Text>
+
+          <Content style={styles.ratingContent}>
+            <StarRating
+              disabled={true}
+              maxStars={5}
+              rating={this.hitungRating()}
+              starColor={'#FFEB3B'}
+              emptyStarColor={'#fff'}
+              starSize={20}
+            />
+          </Content>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              light
+              transparent
+              onPress={() => this.props.parent.props.navigation.navigate('LihatAngkutan', {angkutan: this.props.user.angkutan, pengemudi: this.props.user})}>
+              <Icon name="directions-car"></Icon>
+            </Button>
+
+            <Button
+              light
+              transparent
+              onPress={() => this.props.parent.props.navigation.navigate('LihatTestimoni', {pengemudi: this.props.user})}>
+              <Icon name="rate-review"></Icon>
+            </Button>
+          </View>
+
         </Content>
 
         <Content style={styles.centerSection}>

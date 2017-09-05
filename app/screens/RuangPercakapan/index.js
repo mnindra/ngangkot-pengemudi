@@ -27,7 +27,7 @@ import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import styles from './styles';
 
-export default class LihatTestimoni extends ValidationComponent {
+export default class RuangPercakapan extends ValidationComponent {
 
   constructor(props) {
     super(props);

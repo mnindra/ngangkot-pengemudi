@@ -144,38 +144,6 @@ export default class LihatTestimoni extends ValidationComponent {
           </Header>
 
           <Content padder>
-
-            <Content style={styles.ratingContent}>
-              <Text style={styles.ratingText}>Beri Rating</Text>
-              <StarRating
-                disabled={false}
-                maxStars={5}
-                rating={this.state.rating}
-                selectedStar={(rating) => this.setState({rating})}
-                starColor={'#FFEB3B'}
-                starSize={20}
-              />
-            </Content>
-
-            <Form>
-              <Item floatingLabel error={this.isFieldInError('testimoni ')}>
-                <Label>Tuliskan Testimoni Anda</Label>
-                <Input
-                  style={styles.inputTestimoni}
-                  multiline={true}
-                  value={this.state['testimoni ']}
-                  onChangeText={(text) => this.setState({'testimoni ': text})} />
-              </Item>
-
-              <ErrorLabel error={this.state.errors['testimoni ']} />
-              <Button
-                success
-                block
-                style={styles.buttonTestimoni}
-                onPress={() => this.beriTestimoni()}>
-                <Text>Beri Testimoni</Text>
-              </Button>
-            </Form>
             <List dataArray={this.state.testimoni} renderRow={(rowData) => this.renderRow(rowData)}></List>
           </Content>
         </Container>

@@ -31,6 +31,18 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 120
   },
+  ratingContent: {
+    width: '40%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    marginTop:10
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });
 
 export default styles;
