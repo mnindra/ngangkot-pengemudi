@@ -74,7 +74,7 @@ export default class Main extends Component {
       for (let index in snapshot.val()) {
         let item = snapshot.val()[index];
         for(let indexLangganan in item.langganan) {
-          if(uid == item.langganan[indexLangganan]) {
+          if(uid == indexLangganan) {
             langganan.push(item);
           }
         }

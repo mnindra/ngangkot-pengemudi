@@ -18,7 +18,7 @@ export default class Ngangkot extends Component {
     return (
         <View style={styles.content}>
           <Image style={styles.logo} source={require('../../images/logo.png')} />
-          <Button style={styles.button} onPress={() => this.navigation.navigate('LokasiAwal')}><Text>Cari Angkot</Text></Button>
+          <Button style={styles.button} onPress={() => this.navigation.navigate('MulaiNgangkot')}><Text>Cari Penumpang</Text></Button>
         </View>
     )
   }

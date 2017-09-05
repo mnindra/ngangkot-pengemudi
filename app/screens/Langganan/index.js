@@ -45,7 +45,7 @@ export default class Langganan extends Component {
 
     if(rowData.langganan[this.props.user.id_pengemudi].status == 0) {
       konfirmasi = 'Belum Dikonfirmasi';
-      btnKonfirmasi = <Button onPress={() => this.konfirmasi(rowData.id_penumpang)} success>Konfirmasi</Button>
+      btnKonfirmasi = <Button small onPress={() => this.konfirmasi(rowData.id_penumpang)} success><Text>Konfirmasi</Text></Button>
     }
 
     return (

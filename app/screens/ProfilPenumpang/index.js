@@ -95,8 +95,8 @@ export default class ProfilPenumpang extends Component {
           <Content>
             <Content style={styles.topSection}>
               <Image  style={styles.image} source={{uri: this.navigationProps.penumpang.foto || this.placehold}} />
-              <Text style={styles.topSectionText}>{this.navigationProps.pengemudi.nama}</Text>
-              <Text style={styles.topSectionText}>{this.navigationProps.pengemudi.email}</Text>
+              <Text style={styles.topSectionText}>{this.navigationProps.penumpang.nama}</Text>
+              <Text style={styles.topSectionText}>{this.navigationProps.penumpang.email}</Text>
               {this.pesanButton()}
             </Content>
 
