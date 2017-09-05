@@ -19,30 +19,40 @@ export default class Langganan extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pengemudi: []
+      penumpang: []
     }
   }
 
-  batal(id_pengemudi) {
+  konfirmasi(id_penumpang) {
     let uid = firebase.auth().currentUser.uid;
     // hapus data langganan
-    firebase.database().ref('penumpang/' + uid + '/langganan/' + id_pengemudi).remove();
-    // hapus percakapan dengan pengemudi
-    firebase.database().ref('percakapan/' + uid + '_' + id_pengemudi).remove();
+    firebase.database().ref('penumpang/' + id_penumpang + '/langganan/' + uid).update({
+      status: 1
+    });
+  }
 
+  batal(id_penumpang) {
+    let uid = firebase.auth().currentUser.uid;
+    // hapus data langganan
+    firebase.database().ref('penumpang/' + id_penumpang + '/langganan/' + uid).remove();
+    // hapus percakapan dengan pengemudi
+    firebase.database().ref('percakapan/' + id_penumpang + '_' + uid).remove();
   }
 
   renderRow(rowData) {
     let konfirmasi;
-    if (this.props.user.langganan[rowData.id_pengemudi].status == 0) {
+    let btnKonfirmasi;
+
+    if(rowData.langganan[this.props.user.id_pengemudi].status == 0) {
       konfirmasi = 'Belum Dikonfirmasi';
+      btnKonfirmasi = <Button onPress={() => this.konfirmasi(rowData.id_penumpang)} success>Konfirmasi</Button>
     }
 
     return (
       <ListItem
         avatar
         button
-        onPress={() => this.props.parent.props.navigation.navigate('ProfilPengemudi', {pengemudi:rowData, penumpang: this.props.user})}
+        onPress={() => this.props.parent.props.navigation.navigate('ProfilPenumpang', {penumpang:rowData, pengemudi: this.props.user})}
         style={styles.listItem}>
         <Left>
           <Thumbnail source={{ uri: rowData.foto || 'http://placehold.it/300x300' }} />
@@ -52,7 +62,8 @@ export default class Langganan extends Component {
         <Text note style={{color: '#b5423c'}}>{konfirmasi}</Text>
         </Body>
         <Right>
-          <Button small danger onPress={() => this.batal(rowData.id_pengemudi)}><Text>Batal</Text></Button>
+          {btnKonfirmasi}
+          <Button small danger onPress={() => this.batal(rowData.id_penumpang)}><Text>Batal</Text></Button>
         </Right>
       </ListItem>
     )

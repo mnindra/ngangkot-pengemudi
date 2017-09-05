@@ -22,7 +22,7 @@ import firebase from '../../config/firebase';
 import StarRating from 'react-native-star-rating';
 import styles from './styles';
 
-export default class Profil extends Component {
+export default class ProfilPenumpang extends Component {
 
   constructor(props) {
     super(props);
@@ -34,44 +34,20 @@ export default class Profil extends Component {
     this.navigationProps = this.props.navigation.state.params;
   }
 
-  langganan() {
-    let uid = firebase.auth().currentUser.uid;
-    firebase.database().ref("penumpang/" + uid + "/langganan/" + this.navigationProps.pengemudi.id_pengemudi).set({
-      id_pengemudi: this.navigationProps.pengemudi.id_pengemudi,
-      status: 0
-    });
-    this.setState({
-      langganan: 1
-    });
-  }
-
   batalLangganan() {
     let uid = firebase.auth().currentUser.uid;
     // hapus data langganan
-    firebase.database().ref("penumpang/" + uid + "/langganan/" + this.navigationProps.pengemudi.id_pengemudi).remove();
+    firebase.database().ref("penumpang/" + this.navigationProps.penumpang.id_penumpang + "/langganan/" + uid).remove();
     this.setState({
       langganan: 0
     });
     // hapus percakapan dengan pengemudi
-    firebase.database().ref('percakapan/' + uid + '_' + this.navigationProps.pengemudi.id_pengemudi).remove();
-  }
-
-  hitungRating() {
-    let rating = 0;
-    let ratingCount = 0;
-    for(let index in this.navigationProps.pengemudi.testimoni) {
-      rating += this.navigationProps.pengemudi.testimoni[index].rating;
-      ratingCount++;
-    }
-    rating = rating / ratingCount;
-    return rating;
+    firebase.database().ref('percakapan/' + this.navigationProps.penumpang.id_penumpang + '_' + uid).remove();
   }
 
   langgananButton() {
-    let langgananBtn = '';
-    if(this.state.langganan == 0) {
-      langgananBtn = <Button full success block onPress={() => this.langganan()}><Text>Langganan</Text></Button>
-    } else {
+    let langgananBtn;
+    if(this.state.langganan == 1) {
       langgananBtn = <Button full danger block  onPress={() => this.batalLangganan()}><Text>Batal Langganan</Text></Button>
     }
     return langgananBtn;
@@ -112,26 +88,15 @@ export default class Profil extends Component {
               </Button>
             </Left>
             <Body>
-            <Title>Profil Pengemudi</Title>
+            <Title>Profil Penumpang</Title>
             </Body>
           </Header>
 
           <Content>
             <Content style={styles.topSection}>
-              <Image  style={styles.image} source={{uri: this.navigationProps.pengemudi.foto || placehold}} />
+              <Image  style={styles.image} source={{uri: this.navigationProps.penumpang.foto || this.placehold}} />
               <Text style={styles.topSectionText}>{this.navigationProps.pengemudi.nama}</Text>
               <Text style={styles.topSectionText}>{this.navigationProps.pengemudi.email}</Text>
-
-              <Content style={styles.ratingContent}>
-                <StarRating
-                  disabled={true}
-                  maxStars={5}
-                  rating={this.hitungRating()}
-                  starColor={'#FFEB3B'}
-                  emptyStarColor={'#fff'}
-                  starSize={20}
-                />
-              </Content>
               {this.pesanButton()}
             </Content>
 
@@ -144,7 +109,7 @@ export default class Profil extends Component {
                     <Icon name="place" style={styles.centerSectionText} />
                   </Left>
                   <Body>
-                  <Text style={styles.centerSectionText}>{this.navigationProps.pengemudi.alamat}</Text>
+                  <Text style={styles.centerSectionText}>{this.navigationProps.penumpang.alamat}</Text>
                   </Body>
                 </ListItem>
 
@@ -153,7 +118,7 @@ export default class Profil extends Component {
                     <Icon name="smartphone" style={styles.centerSectionText} />
                   </Left>
                   <Body>
-                  <Text style={styles.centerSectionText}>{this.navigationProps.pengemudi.telp}</Text>
+                  <Text style={styles.centerSectionText}>{this.navigationProps.penumpang.telp}</Text>
                   </Body>
                 </ListItem>
               </List>

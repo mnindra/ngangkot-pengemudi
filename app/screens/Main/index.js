@@ -36,7 +36,7 @@ export default class Main extends Component {
   }
 
   Logout() {
-    firebase.database().ref('penumpang/' + this.state.userDB.id_penumpang).update({online: 0});
+    firebase.database().ref('pengemudi/' + this.state.userDB.id_penumpang).update({online: 0});
     firebase.auth().signOut();
     this.props.navigation.navigate('Login');
   }
@@ -61,22 +61,25 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    // ambil data penumpang saat ini
+    // ambil data pengemudi saat ini
     let uid = firebase.auth().currentUser.uid;
-    firebase.database().ref("penumpang/" + uid).on("value", (snapshot) => {
+    firebase.database().ref("pengemudi/" + uid).on("value", (snapshot) => {
       this.setState({ userDB: snapshot.val() });
+    });
 
-      // ambil data langganan penumpang
+    // ambil data langganan pengemudi
+    firebase.database().ref("penumpang/").on("value", (snapshot) => {
       this.setState({langganan: []});
-      for (let index in snapshot.val().langganan) {
-        firebase.database().ref('pengemudi/' + index).once("value").then((snapshot) => {
-          let array = this.state.langganan;
-          array.push(snapshot.val());
-          this.setState({
-            langganan: array
-          });
-        });
+      let langganan = [];
+      for (let index in snapshot.val()) {
+        let item = snapshot.val()[index];
+        for(let indexLangganan in item.langganan) {
+          if(uid == item.langganan[indexLangganan]) {
+            langganan.push(item);
+          }
+        }
       }
+      this.setState({langganan: langganan});
     });
 
     // ambil data percakapan

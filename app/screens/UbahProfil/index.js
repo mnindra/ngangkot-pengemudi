@@ -39,7 +39,7 @@ export default class UbahProfil extends ValidationComponent {
   ubah () {
     this.validasiForm();
     if (this.isFormValid()) {
-      firebase.database().ref('penumpang/' + this.props.navigation.state.params.user.id_penumpang).update({
+      firebase.database().ref('pengemudi/' + this.props.navigation.state.params.user.id_pengemudi).update({
         nama: this.state.nama,
         alamat: this.state.alamat,
         telp: this.state.telp,
@@ -97,7 +97,7 @@ export default class UbahProfil extends ValidationComponent {
             <Form>
               <Item floatingLabel error={this.isFieldInError('nama')}>
                 <Icon name="person" style={styles.formIcon}/>
-                <Input
+                 <Input
                   placeholder="Nama"
                   value={this.state.nama}
                   onChangeText={(text) => this.setState({nama: text})} />

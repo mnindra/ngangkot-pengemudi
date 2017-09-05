@@ -61,8 +61,8 @@ export default class Daftar extends ValidationComponent {
         let bulan = String(d.getMonth() + 1);
         let tahun = String(d.getFullYear());
         let user = firebase.auth().currentUser;
-        firebase.database().ref('penumpang/' + user.uid).set({
-          id_penumpang: user.uid,
+        firebase.database().ref('pengemudi/' + user.uid).set({
+          id_pengemudi: user.uid,
           nama: this.state.nama,
           email: this.state.email,
           alamat: this.state.alamat,
@@ -141,11 +141,11 @@ export default class Daftar extends ValidationComponent {
           <Content padder>
             <Image style={styles.logo} source={require('../../images/logo.png')} />
             <H2 style={styles.title}>Ngangkot</H2>
-            <Text style={styles.subtitle}>Penumpang</Text>
+            <Text style={styles.subtitle}>Pengemudi</Text>
 
             <Card style={styles.card} transparent>
               <Content padder>
-                <Text style={styles.formText}>Daftar sebagai penumpang baru</Text>
+                <Text style={styles.formText}>Daftar sebagai pengemudi baru</Text>
                 <Form style={styles.form}>
                   <Item floatingLabel error={this.isFieldInError('nama')}>
                     <Icon name="person" style={styles.formIcon}/>

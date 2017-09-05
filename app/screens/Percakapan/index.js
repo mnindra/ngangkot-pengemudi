@@ -26,11 +26,11 @@ export default class Percakapan extends Component {
     this.setState({percakapan: []});
     let i = 0;
     for (let index in this.props.percakapan) {
-      let id_pengemudi = index.split("_")[1];
-      firebase.database().ref("pengemudi/" + id_pengemudi).once("value").then((snapshot) => {
+      let id_penumpang = index.split("_")[0];
+      firebase.database().ref("penumpang/" + id_penumpang).once("value").then((snapshot) => {
         let percakapan = this.state.percakapan;
         percakapan[i] = this.props.percakapan[index];
-        percakapan[i].pengemudi = snapshot.val();
+        percakapan[i].penumpang = snapshot.val();
         this.setState({percakapan});
         i++;
       });
@@ -38,7 +38,6 @@ export default class Percakapan extends Component {
   }
 
   renderRow(rowData) {
-
     let pesan = [];
     for (let index in rowData.pesan) {
       pesan.push(rowData.pesan[index]);
@@ -48,10 +47,10 @@ export default class Percakapan extends Component {
       <ListItem
         avatar
         button
-        onPress={() => this.props.parent.props.navigation.navigate('RuangPercakapan', {penumpang: this.props.user, pengemudi: rowData.pengemudi})}>
-        <Thumbnail size={80} source={{ uri: rowData.pengemudi.foto || 'http://placehold.it/300x300' }} />
+        onPress={() => this.props.parent.props.navigation.navigate('RuangPercakapan', {pengemudi: this.props.user, penumpang: rowData.penumpang})}>
+        <Thumbnail size={80} source={{ uri: rowData.penumpang.foto || 'http://placehold.it/300x300' }} />
         <Body>
-        <Text>{rowData.pengemudi.nama}</Text>
+        <Text>{rowData.penumpang.nama}</Text>
         <Text note>{pesan[pesan.length - 1].waktu}</Text>
         <Text>{pesan[pesan.length - 1].isi}</Text>
         </Body>

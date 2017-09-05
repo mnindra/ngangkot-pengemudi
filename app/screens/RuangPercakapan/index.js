@@ -53,7 +53,7 @@ export default class LihatTestimoni extends ValidationComponent {
       let id_pengemudi = this.navigationProps.pengemudi.id_pengemudi;
       let id_penumpang = this.navigationProps.penumpang.id_penumpang;
       firebase.database().ref('percakapan/' + id_penumpang  + '_' + id_pengemudi + '/pesan').push({
-        id_penumpang: firebase.auth().currentUser.uid,
+        id_pengemudi: firebase.auth().currentUser.uid,
         isi: this.state.pesan,
         waktu: `${tanggal}/${bulan}/${tahun} ${jam}:${menit}`
       });
@@ -98,8 +98,8 @@ export default class LihatTestimoni extends ValidationComponent {
 
   renderRow(rowData) {
 
-    let containerPesan = rowData.id_penumpang ? styles.containerPesanPenumpang : styles.containerPesanPengemudi;
-    let pesan = rowData.id_penumpang ? styles.pesanPenumpang : styles.pesanPengemudi;
+    let containerPesan = rowData.id_pengemudi ? styles.containerPesanPenumpang : styles.containerPesanPengemudi;
+    let pesan = rowData.id_pengemudi ? styles.pesanPenumpang : styles.pesanPengemudi;
 
     return (
       <ListItem style={styles.listItem}>
@@ -122,7 +122,7 @@ export default class LihatTestimoni extends ValidationComponent {
               </Button>
             </Left>
             <Body>
-            <Title>{this.navigationProps.pengemudi.nama}</Title>
+            <Title>{this.navigationProps.penumpang.nama}</Title>
             </Body>
           </Header>
 

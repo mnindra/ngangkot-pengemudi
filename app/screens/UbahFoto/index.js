@@ -79,7 +79,7 @@ export default class UbahFoto extends Component {
       window.Blob = Blob;
 
       let uid = firebase.auth().currentUser.uid;
-      const imageRef = firebase.storage().ref("penumpang/" + uid + ".jpg");
+      const imageRef = firebase.storage().ref("pengemudi/" + uid + ".jpg");
       let mime = 'image/jpg';
       fs.readFile(this.state.imagePath, 'base64').then((data) => {
         return Blob.build(data, {type: `${mime};BASE64`})
@@ -88,7 +88,7 @@ export default class UbahFoto extends Component {
       }).then(() => {
         return imageRef.getDownloadURL();
       }).then((url) => {
-        firebase.database().ref('penumpang/' + uid).update({foto: url});
+        firebase.database().ref('pengemudi/' + uid).update({foto: url});
         this.props.navigation.navigate('Main', {activeTab: 'profil'});
       }).catch((error) => {
         console.log(error);

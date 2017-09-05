@@ -37,7 +37,7 @@ export default class UbahPassword extends ValidationComponent {
   }
 
   periksaPassword() {
-    return firebase.database().ref("penumpang/" + this.props.navigation.state.params.user.id_penumpang).once("value").then((snapshot) => {
+    return firebase.database().ref("pengemudi/" + this.props.navigation.state.params.user.id_pengemudi).once("value").then((snapshot) => {
       if (snapshot.val().password == this.state['password lama']) {
         return true;
       } else {
@@ -79,7 +79,7 @@ export default class UbahPassword extends ValidationComponent {
     }
 
     if (this.isFormValid()) {
-      firebase.database().ref('penumpang/' + this.props.navigation.state.params.user.id_penumpang).update({
+      firebase.database().ref('pengemudi/' + this.props.navigation.state.params.user.id_penumpang).update({
         password: this.state['password baru'],
       }).then(() => {
         return firebase.auth().currentUser.updatePassword(this.state['password baru']);
