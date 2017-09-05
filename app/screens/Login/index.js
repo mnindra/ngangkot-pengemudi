@@ -37,9 +37,9 @@ export default class Login extends ValidationComponent {
     if (this.isFormValid()) {
       firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(() => {
         let uid = firebase.auth().currentUser.uid;
-        firebase.database().ref("penumpang/" + uid).once("value").then((snapshot) => {
+        firebase.database().ref("pengemudi/" + uid).once("value").then((snapshot) => {
           if (snapshot.val()) {
-            firebase.database().ref("penumpang/" + uid).update({online: 1});
+            firebase.database().ref("pengemudi/" + uid).update({online: 1});
             this.resetInput();
             this.props.navigation.navigate('Main');
           } else {
@@ -115,7 +115,7 @@ export default class Login extends ValidationComponent {
 
             <Image style={styles.logo} source={require('../../images/logo.png')} />
             <H2 style={styles.title}>Ngangkot</H2>
-            <Text style={styles.subtitle}>Penumpang</Text>
+            <Text style={styles.subtitle}>Pengemudi</Text>
 
             <Card style={styles.card} transparent>
               <Content padder>
