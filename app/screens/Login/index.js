@@ -13,18 +13,20 @@ import {
   Icon,
   StyleProvider
 } from 'native-base';
-import { StyleSheet, Image, Alert } from 'react-native';
+import { StyleSheet, Image, Alert, View } from 'react-native';
 import styles from './styles';
 import ErrorLabel from '../../components/ErrorLabel';
 import getTheme from '../../../native-base-theme/components';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Login extends ValidationComponent {
 
   constructor(props) {
     super(props);
     this.state = {
+      loadingAnimation: false,
       email: "",
       password: "",
       errors: {}
@@ -35,9 +37,11 @@ export default class Login extends ValidationComponent {
     this.validasiForm();
 
     if (this.isFormValid()) {
+      this.setState({loadingAnimation:true});
       firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(() => {
         let uid = firebase.auth().currentUser.uid;
         firebase.database().ref("pengemudi/" + uid).once("value").then((snapshot) => {
+          this.setState({loadingAnimation:false});
           if (snapshot.val()) {
             firebase.database().ref("pengemudi/" + uid).update({online: 1});
             this.resetInput();
@@ -53,6 +57,7 @@ export default class Login extends ValidationComponent {
           }
         });
       }).catch((error) => {
+        this.setState({loadingAnimation:false});
         switch (error.code) {
           case "auth/network-request-failed":
             Alert.alert("Koneksi Gagal", "Cek koneksi internet anda");
@@ -161,6 +166,11 @@ export default class Login extends ValidationComponent {
               </Content>
             </Card>
           </Content>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Masuk ke ngangkot..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );
