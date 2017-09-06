@@ -85,7 +85,7 @@ export default class FotoProfil extends Component {
         return imageRef.getDownloadURL();
       }).then((url) => {
         firebase.database().ref('pengemudi/' + uid).update({foto: url});
-        this.props.navigation.navigate('Main');
+        this.props.navigation.navigate('Angkutan');
       }).catch((error) => {
         console.log(error);
       });
@@ -145,7 +145,7 @@ export default class FotoProfil extends Component {
                 <Button
                   danger
                   block
-                  onPress={() => this.props.navigation.navigate('Main')}>
+                  onPress={() => this.props.navigation.navigate('Angkutan')}>
                   <Text>Lewati</Text>
                 </Button>
               </Col>

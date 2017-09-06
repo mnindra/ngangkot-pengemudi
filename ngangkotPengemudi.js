@@ -11,6 +11,7 @@ import LihatAngkutan from './app/screens/LihatAngkutan/index';
 import LihatTestimoni from './app/screens/LihatTestimoni/index';
 import RuangPercakapan from './app/screens/RuangPercakapan/index';
 import MulaiNgangkot from "./app/screens/MulaiNgangkot/index";
+import Angkutan from './app/screens/Angkutan';
 
 console.ignoredYellowBox = [
   'Setting a timer'
@@ -20,6 +21,7 @@ const ngangkot = StackNavigator({
   Login: {screen: Login},
   Daftar: {screen: Daftar},
   FotoProfil: {screen: FotoProfil},
+  Angkutan: {screen: Angkutan},
   Main: {screen: Main},
   UbahFoto: {screen: UbahFoto},
   UbahProfil: {screen: UbahProfil},
