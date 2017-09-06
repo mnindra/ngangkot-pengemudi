@@ -34,6 +34,14 @@ export default class LihatAngkutan extends Component {
     this.placehold = 'http://placehold.it/300x300';
     this.navigationProps = this.props.navigation.state.params;
     this.mapRef = null;
+    this.start = {
+      latitude: 0,
+      longitude: 0
+    };
+    this.end = {
+      latitude: 0,
+      longitude: 0
+    };
 
     // ambil overview_path untuk membuat polyline
     let id_rute = this.navigationProps.pengemudi.angkutan.id_rute;
@@ -52,6 +60,7 @@ export default class LihatAngkutan extends Component {
 
       this.start = this.state.overview_path[0];
       this.end = this.state.overview_path[overview_path.length - 1];
+      this.mapRef.fitToElements(true);
     });
 
     // ambil informasi tentang biaya, keterangan dll
@@ -128,7 +137,7 @@ export default class LihatAngkutan extends Component {
                   latitudeDelta: 0.11209798401417004,
                   longitudeDelta: 0.13812806457281113,
                 }}
-                onLayout={() => this.mapRef.fitToElements(true)}
+                onMapReady={() => this.mapRef.fitToElements(true)}
                 style={styles.map}>
 
                 <MapView.Polyline
