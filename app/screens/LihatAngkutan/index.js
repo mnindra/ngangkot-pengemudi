@@ -70,7 +70,7 @@ export default class LihatAngkutan extends Component {
 
           <Header noShadow>
             <Left>
-              <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Button transparent onPress={() => this.props.navigation.navigate('Main', {activeTab: 'profil'})}>
                 <Icon name="chevron-left" />
               </Button>
             </Left>
@@ -147,6 +147,14 @@ export default class LihatAngkutan extends Component {
                   description={'Titik Akhir Angkot beroperasi'}
                 />
               </MapView>
+              <Button
+                style={styles.buttonUbah}
+                primary
+                block
+                bordered
+                onPress={() => this.props.navigation.navigate('UbahAngkutan', {angkutan:this.navigationProps.angkutan, pengemudi: this.navigationProps.pengemudi})}>
+                <Text>Ubah Data Angkutan</Text>
+              </Button>
             </Content>
           </Content>
         </Container>

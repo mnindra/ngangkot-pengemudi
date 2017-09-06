@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: 300
+  },
+  buttonUbah: {
+    marginTop: 10
   }
 });
 
