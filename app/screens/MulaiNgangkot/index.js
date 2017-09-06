@@ -61,6 +61,9 @@ export default class MulaiNgangkot extends Component {
           error: null
         });
         this.mapRef.fitToElements(true);
+        let uid = firebase.auth().currentUser.uid;
+        firebase.database().ref("pengemudi/" + uid + "/lokasi").set(this.state.position);
+
       }, (error) => {
       this.setState({ error: error.message, loading: false });
       Alert.alert("lokasi tidak ditemukan", "Pastikan anda menghidupkan GPS");
