@@ -94,7 +94,7 @@ export default class Angkutan extends ValidationComponent {
 
   UploadFoto() {
     if (this.state.image == '') {
-      Alert.alert("Data Angkutan", "Pilih foto profil terlebih dahulu");
+      Alert.alert("Data Angkutan", "Pilih foto angkutan terlebih dahulu");
     } else {
       const Blob = RNFetchBlob.polyfill.Blob;
       const fs = RNFetchBlob.fs;

@@ -17,7 +17,7 @@ import {
 } from 'native-base';
 import getTheme from '../../../native-base-theme/components/index';
 import material from '../../../native-base-theme/variables/material';
-import {StyleSheet, Image, View, Alert} from 'react-native';
+import {StyleSheet, Image, View, Alert, TouchableOpacity} from 'react-native';
 import firebase from '../../config/firebase';
 import MapView from 'react-native-maps';
 import styles from './styles';
@@ -81,7 +81,10 @@ export default class LihatAngkutan extends Component {
 
           <Content>
             <Content style={styles.topSection}>
-              <Image style={styles.image} source={{uri: this.navigationProps.angkutan.foto || this.placehold}} />
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('UbahFotoAngkutan', {angkutan:this.navigationProps.angkutan, pengemudi: this.navigationProps.pengemudi})}>
+                <Image style={styles.image} source={{uri: this.navigationProps.angkutan.foto || this.placehold}} />
+              </TouchableOpacity>
               <Text style={styles.topSectionText}>{this.navigationProps.angkutan.no_angkutan}</Text>
             </Content>
 
