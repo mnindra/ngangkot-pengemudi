@@ -124,27 +124,7 @@ export default class ProfilPenumpang extends Component {
               </List>
             </Content>
             <Content style={styles.bottomSection} padder>
-              <Grid>
-                <Col style={{paddingRight: 5}}>
-                  <Button
-                    primary
-                    block
-                    bordered
-                    onPress={() => this.props.navigation.navigate('LihatAngkutan', {angkutan: this.navigationProps.pengemudi.angkutan, pengemudi: this.navigationProps.pengemudi})}>
-                    <Text>lihat angkutan</Text>
-                  </Button>
-                </Col>
 
-                <Col style={{paddingLeft: 5}}>
-                  <Button
-                    success
-                    block
-                    bordered
-                    onPress={() => this.props.navigation.navigate('LihatTestimoni', {pengemudi: this.navigationProps.pengemudi})}>
-                    <Text>Lihat Testimoni</Text>
-                  </Button>
-                </Col>
-              </Grid>
             </Content>
           </Content>
         </Container>

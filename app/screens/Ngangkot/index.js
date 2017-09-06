@@ -6,6 +6,7 @@ import {
 } from 'native-base';
 import {Image, View} from 'react-native';
 import styles from './styles';
+import firebase from '../../config/firebase';
 
 export default class Ngangkot extends Component {
 
@@ -14,11 +15,28 @@ export default class Ngangkot extends Component {
     this.navigation = this.props.parent.props.navigation;
   }
 
+  cariPenumpang() {
+    let id_rute = this.props.user.angkutan.id_rute;
+    firebase.database().ref("rute/" + id_rute).once("value").then((snapshot) => {
+      // mengumpulkan semua overview path
+      let overview_path = [];
+      for (let index in snapshot.val().rute.routes[0].overview_path) {
+        let obj = {
+          latitude: snapshot.val().rute.routes[0].overview_path[index].lat,
+          longitude: snapshot.val().rute.routes[0].overview_path[index].lng
+        };
+        overview_path.push(obj);
+      }
+
+      this.navigation.navigate('MulaiNgangkot', {pengemudi: this.props.user, overview_path: overview_path});
+    });
+  }
+
   render () {
     return (
         <View style={styles.content}>
           <Image style={styles.logo} source={require('../../images/logo.png')} />
-          <Button style={styles.button} onPress={() => this.navigation.navigate('MulaiNgangkot')}><Text>Cari Penumpang</Text></Button>
+          <Button style={styles.button} onPress={() => this.cariPenumpang()}><Text>Cari Penumpang</Text></Button>
         </View>
     )
   }

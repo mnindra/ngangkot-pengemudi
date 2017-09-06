@@ -45,7 +45,7 @@ export default class Main extends Component {
     let content = '';
     switch (this.state.activeTab) {
       case 'ngangkot':
-        content = <Ngangkot parent={this} />;
+        content = <Ngangkot parent={this} user={this.state.userDB} />;
         break;
       case 'percakapan':
         content = <Percakapan parent={this} percakapan={this.state.percakapan} user={this.state.userDB} />;

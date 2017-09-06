@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#007AFF'
   },
-  markerPengemudi: {
+  markerPenumpang: {
     height: 40,
     width: 40,
     borderWidth: 3,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  markerPengemudiIcon: {
+  markerPenumpangIcon: {
     color: "#fff"
   },
   textHint: {

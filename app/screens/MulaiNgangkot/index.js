@@ -38,29 +38,19 @@ export default class MulaiNgangkot extends Component {
 
     this.state = {
       position: {
-        latitude: this.navigationProps.position.latitude,
-        longitude: this.navigationProps.position.longitude
+        latitude: -7.9477,
+        longitude: 112.6163
       },
-      loading: false,
-      ruteTerpilih: this.navigationProps.position.id_rute,
+      loading: true,
+      ruteTerpilih: this.navigationProps.pengemudi.angkutan.id_rute,
       overview_path: this.navigationProps.overview_path,
-      pengemudi: [],
-      penumpang: null,
-      dekat: false,
+      penumpang: [],
       error: null
     };
-
-    // buat status ngangkot di database
-    let uid = firebase.auth().currentUser.uid;
-    firebase.database().ref("ngangkot/" + uid).set({
-      id_penumpang: uid,
-      lokasi: this.navigationProps.lokasiAwal
-    });
   }
 
   componentDidMount() {
     // mencari lokasi geolocation
-    this.mapRef.fitToElements(false);
     this.watchId = navigator.geolocation.watchPosition((position) => {
         this.setState({
           loading: false,
@@ -70,72 +60,39 @@ export default class MulaiNgangkot extends Component {
           },
           error: null
         });
-      }, (error) => this.setState({ error: error.message }),
+        this.mapRef.fitToElements(true);
+      }, (error) => {
+      this.setState({ error: error.message, loading: false });
+      Alert.alert("lokasi tidak ditemukan", "Pastikan anda menghidupkan GPS");
+      this.mapRef.fitToElements(false);
+      },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 },
     );
 
-    // mencari pengemudi yang online
-    firebase.database().ref("pengemudi").on("value", (snapshot) => {
-      let pengemudi = [];
+    // mencari penumpang di rute tersebut
+    firebase.database().ref("rute/" + this.state.ruteTerpilih + "/penumpang").on("value", (snapshot) =>{
+      let penumpang = [];
       for (let index in snapshot.val()) {
         let item = snapshot.val()[index];
-        if(item.angkutan.id_rute == this.navigationProps.id_rute && item.online == 1) {
-          pengemudi.push(item);
-        }
+        // ambil informasi penumpang
+        firebase.database().ref("penumpang/" + item.id_penumpang).once("value").then((snapshot) => {
+          item.dataPenumpang = snapshot.val();
+          penumpang.push(item);
+          this.setState({penumpang: penumpang});
+        });
       }
-      this.setState({pengemudi});
-
-      this.state.pengemudi.forEach((item) => {
-        let pengemudiLat = item.lokasi.latitude;
-        let pengemudiLon = item.lokasi.longitude;
-        let awalLat = this.navigationProps.lokasiAwal.latitude;
-        let awalLon = this.navigationProps.lokasiAwal.longitude;
-        let jarak = this.getDistanceFromLatLonInKm(pengemudiLat, pengemudiLon, awalLat, awalLon);
-        if(jarak < 0.5 && this.state.dekat === false) {
-          Alert.alert("Angkot Sudah Dekat", "Angkot berada kurang dari 500 Meter");
-          this.setState({dekat: true});
-        }
-      });
     });
-
-    // ambil data penumpang
-    let uid = firebase.auth().currentUser.uid;
-    firebase.database().ref("penumpang/" + uid).once("value").then((snapshot) => {
-      this.setState({
-        penumpang: snapshot.val()
-      });
-    });
-  }
-
-  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = this.deg2rad(lon2-lon1);
-    var a =
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-    ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c; // Distance in km
-    return d;
-  }
-
-  deg2rad(deg) {
-    return deg * (Math.PI/180)
   }
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchId);
   }
 
-  profilPengemudi(pengemudi) {
-    this.props.navigation.navigate('ProfilPengemudi', {pengemudi, penumpang: this.state.penumpang});
+  profilPenumpang(penumpang) {
+    this.props.navigation.navigate('ProfilPenumpang', {pengemudi: this.navigationProps.pengemudi, penumpang});
   }
 
   selesai () {
-    let uid = firebase.auth().currentUser.uid;
-    firebase.database().ref("ngangkot/" + uid).remove();
     this.props.navigation.navigate('Main');
   }
 
@@ -164,7 +121,7 @@ export default class MulaiNgangkot extends Component {
                 longitudeDelta: 0.13812806457281113,
               }}
               style={styles.map}
-              onMapReady={() => this.mapRef.fitToElements(false)}>
+              onMapReady={() => this.mapRef.fitToElements(true)}>
 
               {/* marker posisi */}
               <MapView.Marker
@@ -174,39 +131,23 @@ export default class MulaiNgangkot extends Component {
                 </View>
               </MapView.Marker>
 
-              {/* marker titik tujuan */}
-              <MapView.Marker
-                pinColor={"#ff3f29"}
-                coordinate={this.navigationProps.lokasiTujuan}
-                title={'Lokasi Tujuan'}
-                description={'lokasi yang ingin anda tuju'}
-              />
-
-              {/* marker titik awal */}
-              <MapView.Marker
-                pinColor={"#007AFF"}
-                coordinate={this.navigationProps.lokasiAwal}
-                title={'Lokasi Awal'}
-                description={'lokasi dimana anda akan naik angkot'}
-              />
-
               {/* jalur rute */}
               <MapView.Polyline
                 coordinates={this.state.overview_path}
                 strokeColor={'#709eff'}
                 strokeWidth={3}/>
 
-              {/* marker pengemudi */}
-              {this.state.pengemudi.map(marker => (
+              {/* marker penumpang */}
+              {this.state.penumpang.map(marker => (
                 <MapView.Marker
                   pinColor={"#3e3e3e"}
-                  key={marker.id_pengemudi}
+                  key={marker.id_penumpang}
                   coordinate={marker.lokasi}
-                  title={marker.nama}
-                  description={'sentuh untuk melihat profil pengemudi'}
-                  onCalloutPress={() => { this.profilPengemudi(marker) }}>
-                  <View style={styles.markerPengemudi}>
-                    <Icon name="directions-car" style={styles.markerPengemudiIcon} />
+                  title={marker.dataPenumpang.nama}
+                  description={'sentuh untuk melihat profil penumpang'}
+                  onCalloutPress={() => { this.profilPenumpang(marker.dataPenumpang) }}>
+                  <View style={styles.markerPenumpang}>
+                    <Icon name="person" style={styles.markerPenumpangIcon} />
                   </View>
                 </MapView.Marker>
               ))}
