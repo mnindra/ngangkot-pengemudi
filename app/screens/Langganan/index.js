@@ -8,9 +8,10 @@ import {
   Body,
   Thumbnail,
   Right,
-  Button
+  Button,
+  Icon
 } from 'native-base';
-import {Alert} from 'react-native';
+import {Alert, View} from 'react-native';
 import firebase from '../../config/firebase';
 import styles from "./styles";
 
@@ -45,7 +46,9 @@ export default class Langganan extends Component {
 
     if(rowData.langganan[this.props.user.id_pengemudi].status == 0) {
       konfirmasi = 'Belum Dikonfirmasi';
-      btnKonfirmasi = <Button small onPress={() => this.konfirmasi(rowData.id_penumpang)} success><Text>Konfirmasi</Text></Button>
+      btnKonfirmasi = <Button smsall transparent onPress={() => this.konfirmasi(rowData.id_penumpang)} success>
+        <Icon name="check-circle" />
+      </Button>
     }
 
     return (
@@ -53,7 +56,7 @@ export default class Langganan extends Component {
         avatar
         button
         onPress={() => this.props.parent.props.navigation.navigate('ProfilPenumpang', {penumpang:rowData, pengemudi: this.props.user})}
-        style={styles.listItem}>
+        style={{borderBottomWidth: 0}}>
         <Left>
           <Thumbnail source={{ uri: rowData.foto || 'http://placehold.it/300x300' }} />
         </Left>
@@ -61,9 +64,13 @@ export default class Langganan extends Component {
         <Text>{rowData.nama}</Text>
         <Text note style={{color: '#b5423c'}}>{konfirmasi}</Text>
         </Body>
-        <Right>
-          {btnKonfirmasi}
-          <Button small danger onPress={() => this.batal(rowData.id_penumpang)}><Text>Batal</Text></Button>
+        <Right style={styles.buttonContainer}>
+          <View style={styles.buttonGroup}>
+            {btnKonfirmasi}
+            <Button transparent small danger onPress={() => this.batal(rowData.id_penumpang)}>
+              <Icon name="delete"/>
+            </Button>
+          </View>
         </Right>
       </ListItem>
     )

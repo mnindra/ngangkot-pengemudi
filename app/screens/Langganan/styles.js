@@ -6,7 +6,13 @@ const styles = StyleSheet.create({
   },
   listItem: {
     paddingBottom:10
-  }
+  },
+  buttonGroup: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
 });
 
 export default styles;
