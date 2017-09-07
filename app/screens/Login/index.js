@@ -42,11 +42,8 @@ export default class Login extends ValidationComponent {
         let uid = firebase.auth().currentUser.uid;
         firebase.database().ref("pengemudi/" + uid).once("value").then((snapshot) => {
           this.setState({loadingAnimation:false});
-          if (snapshot.val()) {
-            firebase.database().ref("pengemudi/" + uid).update({online: 1});
-            this.resetInput();
-            this.props.navigation.navigate('Main');
-          } else {
+
+          if(!snapshot.val()) {
             this.setState({
               password: "",
               errors: {
@@ -54,6 +51,16 @@ export default class Login extends ValidationComponent {
               }
             });
             firebase.auth().signOut();
+          } else if (snapshot.val().blokir == 1) {
+            this.setState({
+              password: ""
+            });
+            Alert.alert("Terblokir", "Akun anda telah diblokir");
+            firebase.auth().signOut();
+          } else {
+            firebase.database().ref("pengemudi/" + uid).update({online: 1});
+            this.resetInput();
+            this.props.navigation.navigate('Main');
           }
         });
       }).catch((error) => {

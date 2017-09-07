@@ -36,7 +36,7 @@ export default class Main extends Component {
   }
 
   Logout() {
-    firebase.database().ref('pengemudi/' + this.state.userDB.id_penumpang).update({online: 0});
+    firebase.database().ref('pengemudi/' + this.state.userDB.id_pengemudi).update({online: 0});
     firebase.auth().signOut();
     this.props.navigation.navigate('Login');
   }
