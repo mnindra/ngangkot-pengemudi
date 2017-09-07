@@ -82,7 +82,7 @@ export default class UbahPassword extends ValidationComponent {
 
     if (this.isFormValid()) {
       this.setState({loadingAnimation: true});
-      firebase.database().ref('pengemudi/' + this.props.navigation.state.params.user.id_penumpang).update({
+      firebase.database().ref('pengemudi/' + this.props.navigation.state.params.user.id_pengemudi).update({
         password: this.state['password baru'],
       }).then(() => {
         return firebase.auth().currentUser.updatePassword(this.state['password baru']);
