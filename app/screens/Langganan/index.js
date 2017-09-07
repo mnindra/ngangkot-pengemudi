@@ -56,7 +56,7 @@ export default class Langganan extends Component {
         avatar
         button
         onPress={() => this.props.parent.props.navigation.navigate('ProfilPenumpang', {penumpang:rowData, pengemudi: this.props.user})}
-        style={{borderBottomWidth: 0}}>
+        style={styles.listItem}>
         <Left>
           <Thumbnail source={{ uri: rowData.foto || 'http://placehold.it/300x300' }} />
         </Left>
