@@ -19,12 +19,14 @@ import getTheme from '../../../native-base-theme/components/index';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import styles from "./styles";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default class Daftar extends ValidationComponent {
 
   constructor (props) {
     super(props);
     this.state = {
+      loadingAnimation: false,
       nama: "",
       email: "",
       alamat: "",
@@ -55,6 +57,7 @@ export default class Daftar extends ValidationComponent {
     }
 
     if (this.isFormValid()) {
+      this.setState({loadingAnimation:true});
       firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state['password ']).then(() => {
         let d = new Date();
         let tanggal = String(d.getDate());
@@ -76,9 +79,11 @@ export default class Daftar extends ValidationComponent {
           online: 1,
           tanggal: `${tanggal}/${bulan}/${tahun}`
         });
-        this.resetInput();
+        this.setState({loadingAnimation:false});
+        // this.resetInput();
         this.props.navigation.navigate('FotoProfil');
       }).catch((error) => {
+        this.setState({loadingAnimation:false});
         switch (error.code) {
           case "auth/network-request-failed":
             Alert.alert("Koneksi Gagal", "Cek koneksi internet anda");
@@ -94,7 +99,7 @@ export default class Daftar extends ValidationComponent {
             });
             break;
           default:
-            Alert.alert("Terjadi Kesalahan", "Kesalahan tidak diketahui");
+            Alert.alert(JSON.stringify(error.code));
         }
       });
     }
@@ -224,6 +229,11 @@ export default class Daftar extends ValidationComponent {
               </Content>
             </Card>
           </Content>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Mendaftar ke ngangkot..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

@@ -15,13 +15,14 @@ import {
   Body,
   Title
 } from 'native-base';
-import { StyleSheet, Image, Alert } from 'react-native';
+import { Image, Alert } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import getTheme from '../../../native-base-theme/components/index';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import styles from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class UbahFotoAngkutan extends Component {
 
@@ -29,6 +30,7 @@ export default class UbahFotoAngkutan extends Component {
     super(props);
     this.navigationProps = this.props.navigation.state.params;
     this.state = {
+      loadingAnimation: false,
       image: '',
       imagePath: this.navigationProps.angkutan.foto
     };
@@ -74,6 +76,7 @@ export default class UbahFotoAngkutan extends Component {
     if (this.state.image == '') {
       Alert.alert("Foto Angkutan", "Pilih foto angkutan terlebih dahulu");
     } else {
+      this.setState({loadingAnimation: true});
       const Blob = RNFetchBlob.polyfill.Blob;
       const fs = RNFetchBlob.fs;
       window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
@@ -92,8 +95,10 @@ export default class UbahFotoAngkutan extends Component {
         firebase.database().ref('pengemudi/' + uid + '/angkutan').update({foto: url});
         let angkutan = this.navigationProps.angkutan;
         angkutan.foto = url;
+        this.setState({loadingAnimation: false});
         this.props.navigation.navigate('LihatAngkutan', {angkutan: angkutan, pengemudi: this.navigationProps.pengemudi});
       }).catch((error) => {
+        this.setState({loadingAnimation: false});
         console.log(error);
       });
     }
@@ -149,6 +154,11 @@ export default class UbahFotoAngkutan extends Component {
             onPress={() => this.UploadFoto()}>
             <Text>Simpan</Text>
           </Button>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Menyimpan foto angkutan"}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

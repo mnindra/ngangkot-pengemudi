@@ -17,18 +17,20 @@ import {
   Body,
   Title
 } from 'native-base';
-import { StyleSheet, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import ErrorLabel from '../../components/ErrorLabel';
 import getTheme from '../../../native-base-theme/components/index';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import styles from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class UbahPassword extends ValidationComponent {
 
   constructor (props) {
     super(props);
     this.state = {
+      loadingAnimation: false,
       'password lama': '',
       'password baru': '',
       'konfirmasi password': '',
@@ -79,13 +81,16 @@ export default class UbahPassword extends ValidationComponent {
     }
 
     if (this.isFormValid()) {
+      this.setState({loadingAnimation: true});
       firebase.database().ref('pengemudi/' + this.props.navigation.state.params.user.id_penumpang).update({
         password: this.state['password baru'],
       }).then(() => {
         return firebase.auth().currentUser.updatePassword(this.state['password baru']);
       }).then(() => {
+        this.setState({loadingAnimation: false});
         this.props.navigation.navigate('Main', {activeTab: 'profil'});
       }).catch((error) => {
+        this.setState({loadingAnimation: false});
         switch (error.code) {
           case "auth/network-request-failed":
             Alert.alert("Koneksi Gagal", "Cek koneksi internet anda");
@@ -173,6 +178,11 @@ export default class UbahPassword extends ValidationComponent {
             onPress={() => this.ubah()}>
             <Text>Simpan</Text>
           </Button>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Menyimpan password..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

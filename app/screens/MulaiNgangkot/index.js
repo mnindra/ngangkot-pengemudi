@@ -28,6 +28,7 @@ import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import styles from './styles';
 import MapView from 'react-native-maps';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class MulaiNgangkot extends Component {
 
@@ -156,7 +157,6 @@ export default class MulaiNgangkot extends Component {
               ))}
 
             </MapView>
-            <Text>{ this.state.loading ? 'mencari lokasi saat ini...' : '' }</Text>
           </View>
 
           <Button
@@ -165,6 +165,11 @@ export default class MulaiNgangkot extends Component {
             onPress={() => this.selesai()}>
             <Text>Selesai</Text>
           </Button>
+          <Spinner
+            visible={this.state.loading}
+            textContent={"Mencari lokasi saat ini..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

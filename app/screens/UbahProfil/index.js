@@ -23,12 +23,14 @@ import getTheme from '../../../native-base-theme/components/index';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import styles from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class UbahProfil extends ValidationComponent {
 
   constructor (props) {
     super(props);
     this.state = {
+      loadingAnimation: false,
       nama: this.props.navigation.state.params.user.nama,
       alamat: this.props.navigation.state.params.user.alamat,
       telp: this.props.navigation.state.params.user.telp,
@@ -39,13 +41,16 @@ export default class UbahProfil extends ValidationComponent {
   ubah () {
     this.validasiForm();
     if (this.isFormValid()) {
+      this.setState({loadingAnimation:true});
       firebase.database().ref('pengemudi/' + this.props.navigation.state.params.user.id_pengemudi).update({
         nama: this.state.nama,
         alamat: this.state.alamat,
         telp: this.state.telp,
       }).then(() => {
+        this.setState({loadingAnimation:false});
         this.props.navigation.navigate('Main', {activeTab: 'profil'});
       }).catch((error) => {
+        this.setState({loadingAnimation:false});
         switch (error.code) {
           case "auth/network-request-failed":
             Alert.alert("Koneksi Gagal", "Cek koneksi internet anda");
@@ -131,6 +136,11 @@ export default class UbahProfil extends ValidationComponent {
             onPress={() => this.ubah()}>
             <Text>Simpan</Text>
           </Button>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Menyimpan profil..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

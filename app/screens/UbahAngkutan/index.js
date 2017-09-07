@@ -25,6 +25,7 @@ import getTheme from '../../../native-base-theme/components/index';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import styles from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class UbahAngkutan extends ValidationComponent {
 
@@ -32,6 +33,7 @@ export default class UbahAngkutan extends ValidationComponent {
     super(props);
     this.navigationProps = this.props.navigation.state.params;
     this.state = {
+      loadingAnimation: false,
       'nomor angkutan': this.navigationProps.angkutan.no_angkutan,
       id_rute: this.navigationProps.angkutan.id_rute,
       rute: [],
@@ -51,6 +53,7 @@ export default class UbahAngkutan extends ValidationComponent {
   ubah () {
     this.validasiForm();
     if (this.isFormValid()) {
+      this.setState({loadingAnimation: true});
       let uid = firebase.auth().currentUser.uid;
       firebase.database().ref('pengemudi/' + uid + '/angkutan').update({
         no_angkutan: this.state['nomor angkutan'],
@@ -59,8 +62,10 @@ export default class UbahAngkutan extends ValidationComponent {
         let angkutan = this.navigationProps.angkutan;
         angkutan.no_angkutan = this.state['nomor angkutan'];
         angkutan.id_rute = this.state.id_rute;
+        this.setState({loadingAnimation: false});
         this.props.navigation.navigate('LihatAngkutan', {angkutan: angkutan, pengemudi: this.navigationProps.pengemudi});
       }).catch((error) => {
+        this.setState({loadingAnimation: false});
         switch (error.code) {
           case "auth/network-request-failed":
             Alert.alert("Koneksi Gagal", "Cek koneksi internet anda");
@@ -139,6 +144,11 @@ export default class UbahAngkutan extends ValidationComponent {
             onPress={() => this.ubah()}>
             <Text>Simpan</Text>
           </Button>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Menyimpan data angkutan..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

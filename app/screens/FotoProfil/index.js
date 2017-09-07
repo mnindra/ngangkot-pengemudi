@@ -18,12 +18,14 @@ import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
 import RNFetchBlob from 'react-native-fetch-blob'
 import styles from './styles';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class FotoProfil extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      loadingAnimation: false,
       image: '',
       imagePath: 'http://via.placeholder.com/300x300'
     };
@@ -69,6 +71,7 @@ export default class FotoProfil extends Component {
     if (this.state.image == '') {
       Alert.alert("Foto Profil", "Pilih foto profil terlebih dahulu");
     } else {
+      this.setState({loadingAnimation:true});
       const Blob = RNFetchBlob.polyfill.Blob;
       const fs = RNFetchBlob.fs;
       window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
@@ -85,8 +88,10 @@ export default class FotoProfil extends Component {
         return imageRef.getDownloadURL();
       }).then((url) => {
         firebase.database().ref('pengemudi/' + uid).update({foto: url});
+        this.setState({loadingAnimation:false});
         this.props.navigation.navigate('Angkutan');
       }).catch((error) => {
+        this.setState({loadingAnimation:false});
         console.log(error);
       });
     }
@@ -152,6 +157,11 @@ export default class FotoProfil extends Component {
             </Grid>
 
           </Content>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Menyimpan foto profil..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );

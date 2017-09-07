@@ -21,16 +21,18 @@ import ImagePicker from 'react-native-image-crop-picker';
 import getTheme from '../../../native-base-theme/components';
 import material from '../../../native-base-theme/variables/material';
 import firebase from '../../config/firebase';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
 import styles from './styles';
 import ValidationComponent from 'react-native-form-validator';
 import ErrorLabel from '../../components/ErrorLabel';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Angkutan extends ValidationComponent {
 
   constructor(props) {
     super(props);
     this.state = {
+      loadingAnimation: false,
       image: '',
       imagePath: 'http://via.placeholder.com/300x300',
       'nomor angkutan': "",
@@ -94,6 +96,7 @@ export default class Angkutan extends ValidationComponent {
 
   UploadFoto() {
     if (this.state.image == '') {
+      this.setState({loadingAnimation:false});
       Alert.alert("Data Angkutan", "Pilih foto angkutan terlebih dahulu");
     } else {
       const Blob = RNFetchBlob.polyfill.Blob;
@@ -102,7 +105,7 @@ export default class Angkutan extends ValidationComponent {
       window.Blob = Blob;
 
       let uid = firebase.auth().currentUser.uid;
-      const imageRef = firebase.storage().ref("angkutan/" + this.state['nomor angkutan'] + ".jpg");
+      const imageRef = firebase.storage().ref("angkutan/" + uid + ".jpg");
       let mime = 'image/jpg';
       fs.readFile(this.state.imagePath, 'base64').then((data) => {
         return Blob.build(data, {type: `${mime};BASE64`})
@@ -112,8 +115,10 @@ export default class Angkutan extends ValidationComponent {
         return imageRef.getDownloadURL();
       }).then((url) => {
         firebase.database().ref('pengemudi/' + uid + '/angkutan').update({foto: url});
+        this.setState({loadingAnimation:false});
         this.props.navigation.navigate('Main');
       }).catch((error) => {
+        this.setState({loadingAnimation:false});
         console.log(error);
       });
     }
@@ -132,6 +137,7 @@ export default class Angkutan extends ValidationComponent {
     }
 
     if (this.isFormValid()) {
+      this.setState({loadingAnimation:true});
       let uid = firebase.auth().currentUser.uid;
       firebase.database().ref("pengemudi/" + uid + "/angkutan").set({
         no_angkutan: this.state['nomor angkutan'],
@@ -228,6 +234,11 @@ export default class Angkutan extends ValidationComponent {
               </Content>
             </Card>
           </Content>
+          <Spinner
+            visible={this.state.loadingAnimation}
+            textContent={"Menyimpan data angkutan..."}
+            textStyle={{color: '#FFF'}}
+            overlayColor={"#00BCD4"}/>
         </Container>
       </StyleProvider>
     );
