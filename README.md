@@ -1,6 +1,11 @@
 # Ngangkot Driver
 Mobile application for online angkot transportation driver
 
+## Features
+
+- [x] Tracking passenger location
+- [x] Send message to passenger
+
 ## Development
 
 ```bash
